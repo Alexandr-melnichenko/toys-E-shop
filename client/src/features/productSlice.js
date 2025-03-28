@@ -1,0 +1,25 @@
+import { createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
+
+export const fetchProducts = createAsyncThunk("products/fetchAll", async () => {
+  const response = await axios.get("/api/products");
+  return response.data;
+});
+
+const productSlice = createSlice({
+  name: "products",
+  initialState: { items: [], status: "idle" },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchProducts.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(fetchProducts.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.items = action.payload;
+      });
+  },
+});
+
+export default productSlice.reducer;
